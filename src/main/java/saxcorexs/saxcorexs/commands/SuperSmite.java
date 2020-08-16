@@ -24,7 +24,7 @@ public class SuperSmite implements CommandExecutor {
                     return true;
                 }
                 if (args.length == 0) {
-                    s.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.AQUA + config.getString("Prefix") + ChatColor.DARK_GRAY + "] " + ChatColor.BOLD + ChatColor.RED + "Please specify a player, /supersmite <player>");
+                    s.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.AQUA + config.getString("Prefix") + ChatColor.DARK_GRAY + "] " + ChatColor.BOLD + ChatColor.RED + "Please specify a player, /supersmite <player> [-ban]");
                     return true;
                 }
                 Player target = Bukkit.getServer().getPlayer(args[0]);
@@ -45,6 +45,15 @@ public class SuperSmite implements CommandExecutor {
                     s.sendMessage(ChatColor.RED + "You've smitten " + ChatColor.GOLD + target.getName());
                     target.sendMessage(ChatColor.RED + "You have been smitten by: " + ChatColor.GOLD + s.getName());
                     target.setHealth(0);
+                }
+                if (args[1] == "-ban") {
+                    if (s.hasPermission(config.getString("SuperSmiteBan"))) {
+                        s.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.AQUA + config.getString("Prefix") + ChatColor.DARK_GRAY + "] " + ChatColor.BOLD + ChatColor.RED + "No permission to use this command.");
+                        return false;
+                    }
+                    Date expires = new Date(1000000000, 1, 1);
+                    BanList banlist = Bukkit.getBanList(BanList.Type.NAME);
+                    banlist.addBan(target.getName(), ChatColor.RED + "You have been turned into a burnt McDonalds french fry by " + ChatColor.GOLD + s.getName() + ChatColor.RED + "!", expires, s.getName());
                 }
             }
             return false;
